@@ -1,29 +1,53 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
 DEFAULT_PREFIX="/usr/local"
+INSTALL_PREFIX=""
 
-# 如果用户显式传 PREFIX，优先使用
+# ==========================================================
+# 解析 PREFIX
+# ==========================================================
 if [[ -n "${PREFIX:-}" ]]; then
     INSTALL_PREFIX="$PREFIX"
 else
-    # 尝试从用户级和系统级读取 install.conf
     if [[ -f "$HOME/.local/lib/ok-cpp/install.conf" ]]; then
         # shellcheck source=/dev/null
         source "$HOME/.local/lib/ok-cpp/install.conf"
-        INSTALL_PREFIX="$PREFIX"
+        INSTALL_PREFIX="${PREFIX:-}"
     elif [[ -f "/usr/local/lib/ok-cpp/install.conf" ]]; then
         # shellcheck source=/dev/null
         source "/usr/local/lib/ok-cpp/install.conf"
-        INSTALL_PREFIX="$PREFIX"
+        INSTALL_PREFIX="${PREFIX:-}"
     else
         INSTALL_PREFIX="$DEFAULT_PREFIX"
     fi
 fi
 
+# ==========================================================
+# 校验 PREFIX
+# ==========================================================
+if [[ -z "$INSTALL_PREFIX" ]]; then
+    echo "[ERROR] Invalid install prefix"
+    exit 1
+fi
+
+BIN_PATH="$INSTALL_PREFIX/bin/ok-cpp"
+LIB_PATH="$INSTALL_PREFIX/lib/ok-cpp"
+
+# ==========================================================
+# 是否已安装检查
+# ==========================================================
+if [[ ! -e "$BIN_PATH" && ! -d "$LIB_PATH" ]]; then
+    echo "[WARN] ok-cpp is not installed in $INSTALL_PREFIX"
+    exit 0
+fi
+
 echo "[INFO] Uninstalling ok-cpp from $INSTALL_PREFIX"
 
-rm -f "$INSTALL_PREFIX/bin/ok-cpp"
-rm -rf "$INSTALL_PREFIX/lib/ok-cpp"
+# ==========================================================
+# 执行卸载
+# ==========================================================
+rm -f "$BIN_PATH"
+rm -rf "$LIB_PATH"
 
-echo "[OK] ok-cpp uninstalled"
+echo "[OK] ok-cpp uninstalled successfully"
