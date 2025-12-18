@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# 解析安装根目录
+BIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$BIN_DIR/.." && pwd)"
+
+export OK_CPP_ROOT="$ROOT_DIR"
+
+MODULES_DIR="$ROOT_DIR/lib/ok-cpp/modules"
+
+VERSION_FILE="$ROOT_DIR/lib/ok-cpp/VERSION"
+VERSION="unknown"
+
+[[ -f "$VERSION_FILE" ]] && VERSION="$(cat "$VERSION_FILE")"
+
+print_version() {
+  echo "ok-cpp version $VERSION"
+}
+
+print_help() {
+cat <<'EOF'
+ok-cpp - C++ learning playground (CMake based)
+
+Usage:
+  ok-cpp <command> [options]
+
+Commands:
+  mkp <path>        Create a new CMake C++ project
+  run [path]        Build & run a CMake project
+  doctor            Check development environment
+  help              Show this help message
+
+Options:
+  -h, --help        Show help for a command
+
+Examples:
+  ok-cpp mkp demo/hello
+  ok-cpp run
+  ok-cpp run demo/hello
+  ok-cpp doctor
+EOF
+}
+
+cmd="${1:-}"
+
+case "$cmd" in
+  -v|--version)
+    print_version
+    exit 0
+    ;;
+  -h|--help|help|"")
+    print_help
+    exit 0
+    ;;
+  mkp|run|doctor)
+    shift
+    exec bash "$MODULES_DIR/cmd_${cmd}.sh" "$@"
+    ;;
+  *)
+    echo "Unknown command: $cmd"
+    echo
+    print_help
+    exit 1
+    ;;
+esac
