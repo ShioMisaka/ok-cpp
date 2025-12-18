@@ -4,7 +4,7 @@
 ### 切换到 dev 并从远程更新
 
 ```bash
-git checkout develop
+git checkout dev
 git pull
 ```
 
@@ -24,13 +24,12 @@ git add .
 git commit -m "feat: 实现用户登录功能"
 ```
 > 建议从现在开始就养成规范提交习惯
-
 ---
 
 ## 🔀 3. 功能完成 -> 合并回 develop
 
 ```bash
-git checkout develop
+git checkout dev
 git pull
 
 git merge feature/user-login
@@ -56,7 +55,7 @@ git pull
 
 ### 合并 dev
 ```
-git merge develop
+git merge dev
 git push
 ```
 
@@ -91,9 +90,9 @@ git merge fix/login-crash
 git push
 ```
 
-### ⚠️ 同步回 develop（非常重要）
+### ⚠️ 同步回 dev（非常重要）
 ```bash
-git checkout develop
+git checkout dev
 git merge main
 git push
 ```
