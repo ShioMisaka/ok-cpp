@@ -97,3 +97,47 @@ cmake_get_project_name() {
   [[ -n "$name" ]] || return 1
   printf "%s\n" "$name"
 }
+
+# ==========================================================
+# Config
+# ==========================================================
+OK_CPP_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/ok-cpp"
+OK_CPP_CONFIG_FILE="$OK_CPP_CONFIG_DIR/config"
+
+load_user_config() {
+    if [[ -f "$OK_CPP_CONFIG_FILE" ]]; then
+        # shellcheck source=/dev/null
+        source "$OK_CPP_CONFIG_FILE"
+    fi
+}
+
+save_user_config() {
+    mkdir -p "$OK_CPP_CONFIG_DIR"
+    cat > "$OK_CPP_CONFIG_FILE" <<EOF
+# ok-cpp user config
+
+COMPILER=${COMPILER:-gun}
+TEMPLATE_NAME=${TEMPLATE_NAME:-default}
+EOF
+}
+
+write_user_config() {
+    mkdir -p "$OK_CPP_CONFIG_DIR"
+    cat > "$OK_CPP_CONFIG_FILE" <<EOF
+# ok-cpp user config (auto-generated)
+
+COMPILER=${COMPILER:-clang}
+TEMPLATE_NAME=${TEMPLATE_NAME:-default}
+EOF
+}
+
+validate_compiler() {
+    case "$1" in
+        clang|gun) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+validate_template() {
+    [[ -d "$ROOT_DIR/lib/ok-cpp/templates/$1" ]]
+}

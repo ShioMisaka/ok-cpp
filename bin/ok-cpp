@@ -25,6 +25,7 @@ Commands:
   mkp (m)           Create a new CMake C++ project
   run (r)           Build & run a CMake project
   doctor (d)        Check development environment
+  config (c)        config file
   help (h)          Show this help message
 
 Options:
@@ -45,8 +46,9 @@ resolve_command() {
     m) echo "mkp" ;;
     r) echo "run" ;;
     d) echo "doctor" ;;
+    c) echo "config" ;;
     h) echo "help" ;;
-    mkp|run|doctor|help) echo "$input" ;;
+    mkp|run|doctor|config|help) echo "$input" ;;
     *) echo "" ;;
   esac
 }
@@ -69,7 +71,7 @@ case "$cmd" in
     if [[ "$resolved_cmd" == "help" ]]; then
       print_help
       exit 0
-    elif [[ "$resolved_cmd" == "mkp" || "$resolved_cmd" == "run" || "$resolved_cmd" == "doctor" ]]; then
+    elif [[ "$resolved_cmd" == "mkp" || "$resolved_cmd" == "run" || "$resolved_cmd" == "doctor" || "$resolved_cmd" == "config" ]]; then
       shift
       exec bash "$MODULES_DIR/cmd_${resolved_cmd}.sh" "$@"
     else

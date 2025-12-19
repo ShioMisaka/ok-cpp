@@ -16,10 +16,13 @@ require_cmd cmake
 # ==========================================================
 # 默认值
 # ==========================================================
-COMPILER="clang"
+COMPILER="gun"
 PROJECT_NAME=""
 BUILD_DIR="build"
 BUILD_TYPE="Release"
+
+load_user_config
+COMPILER="${COMPILER:-gun}"
 
 # ==========================================================
 # 参数解析

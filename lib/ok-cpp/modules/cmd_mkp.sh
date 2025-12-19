@@ -16,6 +16,9 @@ TEMPLATE_NAME="default"
 PROJECT_NAME=""
 LIST_ONLY=false
 
+load_user_config
+TEMPLATE_NAME="${TEMPLATE_NAME:-default}"
+
 # ==========================================================
 # 参数解析
 # ==========================================================
