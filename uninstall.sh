@@ -10,13 +10,13 @@ INSTALL_PREFIX=""
 if [[ -n "${PREFIX:-}" ]]; then
     INSTALL_PREFIX="$PREFIX"
 else
-    if [[ -f "$HOME/.local/lib/ok-cpp/install.conf" ]]; then
+    if [[ -f "$HOME/.local/lib/okcpp/install.conf" ]]; then
         # shellcheck source=/dev/null
-        source "$HOME/.local/lib/ok-cpp/install.conf"
+        source "$HOME/.local/lib/okcpp/install.conf"
         INSTALL_PREFIX="${PREFIX:-}"
-    elif [[ -f "/usr/local/lib/ok-cpp/install.conf" ]]; then
+    elif [[ -f "/usr/local/lib/okcpp/install.conf" ]]; then
         # shellcheck source=/dev/null
-        source "/usr/local/lib/ok-cpp/install.conf"
+        source "/usr/local/lib/okcpp/install.conf"
         INSTALL_PREFIX="${PREFIX:-}"
     else
         INSTALL_PREFIX="$DEFAULT_PREFIX"
@@ -32,7 +32,7 @@ if [[ -z "$INSTALL_PREFIX" ]]; then
 fi
 
 BIN_PATH="$INSTALL_PREFIX/bin/ok-cpp"
-LIB_PATH="$INSTALL_PREFIX/lib/ok-cpp"
+LIB_PATH="$INSTALL_PREFIX/lib/okcpp"
 
 # ==========================================================
 # XDG config 路径

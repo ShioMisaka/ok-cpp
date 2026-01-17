@@ -2,7 +2,7 @@
 set -e
 
 PREFIX="${PREFIX:-/usr/local}"
-INSTALL_DIR="$PREFIX/lib/ok-cpp"
+INSTALL_DIR="$PREFIX/lib/okcpp"
 BIN_PATH="$PREFIX/bin/ok-cpp"
 CONF_FILE="$INSTALL_DIR/install.conf"
 VERSION_FILE_SRC="VERSION"
@@ -10,6 +10,35 @@ VERSION_FILE_DST="$INSTALL_DIR/VERSION"
 
 ACTION="install"
 OLD_VERSION=""
+
+# ==========================================================
+# 检查 Python 版本
+# ==========================================================
+PYTHON_CMD=""
+for cmd in python3 python; do
+    if command -v "$cmd" &>/dev/null; then
+        PYTHON_CMD="$cmd"
+        break
+    fi
+done
+
+if [[ -z "$PYTHON_CMD" ]]; then
+    echo "[ERROR] Python 3.8+ is required but not found."
+    echo "Please install Python 3.8 or later."
+    exit 1
+fi
+
+PYTHON_VERSION="$($PYTHON_CMD --version 2>&1 | awk '{print $2}')"
+PYTHON_MAJOR="${PYTHON_VERSION%%.*}"
+PYTHON_MINOR="${PYTHON_VERSION#*.}"
+PYTHON_MINOR="${PYTHON_MINOR%%.*}"
+
+if [[ "$PYTHON_MAJOR" -lt 3 ]] || [[ "$PYTHON_MAJOR" -eq 3 && "$PYTHON_MINOR" -lt 8 ]]; then
+    echo "[ERROR] Python 3.8+ is required, but found $PYTHON_VERSION"
+    exit 1
+fi
+
+echo "[INFO] Using Python: $PYTHON_CMD ($PYTHON_VERSION)"
 
 # ==========================================================
 # 检测是否已安装
@@ -38,21 +67,56 @@ else
 fi
 
 # ==========================================================
+# 检查并安装 Python 依赖
+# ==========================================================
+echo "[INFO] Checking Python dependencies..."
+
+# 检查依赖是否已安装
+MISSING_DEPS=()
+
+if ! $PYTHON_CMD -c "import rich" 2>/dev/null; then
+    MISSING_DEPS+=("rich")
+fi
+
+if ! $PYTHON_CMD -c "import typer" 2>/dev/null; then
+    MISSING_DEPS+=("typer")
+fi
+
+if [[ ${#MISSING_DEPS[@]} -gt 0 ]]; then
+    echo "[INFO] Installing missing Python dependencies: ${MISSING_DEPS[*]}"
+    if command -v pip &>/dev/null; then
+        pip install "${MISSING_DEPS[@]}" || {
+            echo "[WARN] Failed to install dependencies via pip"
+            echo "[INFO] Please install manually: pip install rich typer"
+        }
+    else
+        echo "[WARN] pip not found. Please install dependencies manually:"
+        echo "  pip install rich typer"
+    fi
+fi
+
+# ==========================================================
 # 执行安装 / 更新
 # ==========================================================
 mkdir -p "$PREFIX/bin"
 mkdir -p "$INSTALL_DIR"
 
-cp -r bin "$PREFIX/"
-cp -r lib/ok-cpp "$PREFIX/lib/"
+# 复制 Python 包
+cp -r lib/okcpp "$PREFIX/lib/"
+
+# 复制入口脚本
+cp bin/ok-cpp "$PREFIX/bin/ok-cpp"
+chmod +x "$PREFIX/bin/ok-cpp"
+
+# 复制版本文件
 cp "$VERSION_FILE_SRC" "$INSTALL_DIR/"
 
 # 记录安装信息
 cat > "$CONF_FILE" <<EOF
 PREFIX=$PREFIX
+PYTHON_CMD=$PYTHON_CMD
+PYTHON_VERSION=$PYTHON_VERSION
 EOF
-
-chmod +x "$BIN_PATH"
 
 # ==========================================================
 # 完成提示

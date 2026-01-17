@@ -5,6 +5,8 @@
 `ok-cpp`旨在通过CMake帮助您快速创建、构建、运行和调试小型C++项目。
 它特别适用于C++学习、演示测试以及管理多个小型示例项目。
 
+**使用 Python 3.8+ 实现**
+
 ---
 
 ## 功能亮点
@@ -15,10 +17,35 @@
 - 🧪 调试与发布模式
 - 🩺 环境检测工具`doctor`
 - 📦 支持用户级与系统级安装
+- 🐍 Python 实现易于扩展
+
+---
+
+## 环境要求
+
+- Python 3.8 或更高版本
+- C++ 编译器（g++ 或 clang++）
+- CMake
+- [可选] GDB 用于调试模式
+- [可选] Qt 用于 Qt 模板
 
 ---
 
 ## 安装指南
+
+### 1. 安装 Python 依赖
+
+```bash
+pip install rich typer
+```
+
+或使用 pip3：
+
+```bash
+pip3 install rich typer
+```
+
+### 2. 安装 ok-cpp
 
 安装前请赋予脚本可执行权限：
 
@@ -27,14 +54,14 @@ chmod +x ./install.sh
 chmod +x ./uninstall.sh
 ```
 
-## 系统级安装
+#### 系统级安装
 ```bash
 sudo ./install.sh
 ```
 
 此命令将 `ok-cpp` 安装至 `/usr/local`。
 
-## 用户级安装（无需 sudo）
+#### 用户级安装（无需 sudo）
 ```bash
 PREFIX=$HOME/.local ./install.sh
 ```
@@ -47,9 +74,17 @@ export PATH="$HOME/.local/bin:$PATH"
 
 建议将此行添加至 `~/.bashrc` 或 `~/.zshrc`。
 
+### 3. 验证安装
+
+```bash
+ok-cpp --version
+ok-cpp doctor
+```
+
 ---
 
 ## 卸载
+
 ```bash
 ./uninstall.sh
 ```
@@ -60,7 +95,10 @@ export PATH="$HOME/.local/bin:$PATH"
 PREFIX=$HOME/.local ./uninstall.sh
 ```
 
+---
+
 ## 使用指南
+
 ### 构建与运行
 
 ```bash
@@ -111,32 +149,63 @@ ok-cpp doctor
 ```
 
 检测内容：
+- Python 版本和依赖
 - C++编译器（g++ / clang++）
 - CMake
 - Ninja（可选）
 - GDB（调试模式所需）
 - Qt（Qt模板所需）
 
+### 配置管理
+
+管理用户配置：
+
+```bash
+ok-cpp config show           # 显示当前配置
+ok-cpp config set compiler clang   # 设置默认编译器
+ok-cpp config set template qt      # 设置默认模板
+ok-cpp config reset          # 重置为默认值
+```
+
 ### 版本信息
+
 ```bash
 ok-cpp --version
 ```
 
-### 项目结构
+---
+
+## 项目结构
 
 ```txt
-ok_cpp/
+ok-cpp/
 ├── bin/
-│   └── ok-cpp              # 安装入口点
-├── lib/ok-pp/
-│   ├── modules/            # 命令模块
-│   ├── templates/          # 项目模板
-│   └── common.sh           # 通用工具
+│   └── ok-cpp              # 入口脚本（Python）
+├── lib/
+│   └── okcpp/              # Python 包
+│       ├── cli/            # CLI 命令（run, mkp, doctor, config）
+│       ├── core/           # 核心逻辑（builder, template, detector）
+│       ├── utils/          # 工具模块（log, path, config）
+│       └── templates/      # 项目模板（default, qt）
 ├── install.sh              # 安装脚本
 ├── uninstall.sh            # 卸载脚本
+├── pyproject.toml          # Python 项目配置
+├── requirements.txt        # Python 依赖
 ├── VERSION                 # 版本文件
 └── README.md
 ```
+
+---
+
+## 开发
+
+不安装直接运行：
+
+```bash
+./bin/ok-cpp <命令>
+```
+
+---
 
 ## 许可协议
 

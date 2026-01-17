@@ -1,84 +1,25 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env python3
+"""ok-cpp 入口脚本。
 
-# 解析安装根目录
-BIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$(cd "$BIN_DIR/.." && pwd)"
-export OK_CPP_ROOT="$ROOT_DIR"
-MODULES_DIR="$ROOT_DIR/lib/ok-cpp/modules"
-VERSION_FILE="$ROOT_DIR/lib/ok-cpp/VERSION"
-VERSION="unknown"
-[[ -f "$VERSION_FILE" ]] && VERSION="$(cat "$VERSION_FILE")"
+这个脚本作为 ok-cpp 的主入口点，负责：
+1. 设置 Python 路径以包含 okcpp 包
+2. 导入并调用 CLI 主函数
+"""
 
-print_version() {
-  echo "ok-cpp version $VERSION"
-}
+import sys
+from pathlib import Path
 
-print_help() {
-cat <<'EOF'
-ok-cpp - C++ learning playground (CMake based)
+# 添加 lib/ 目录到 Python 路径
+# 这样即使在开发环境中也能正确导入 okcpp 包
+script_dir = Path(__file__).parent
+lib_dir = script_dir.parent / "lib"
 
-Usage:
-  ok-cpp <command> [options]
+# 如果 lib 目录存在且包含 okcpp，添加到路径
+if lib_dir.exists() and (lib_dir / "okcpp").exists():
+    sys.path.insert(0, str(lib_dir))
 
-Commands:
-  mkp (m)           Create a new CMake C++ project
-  run (r)           Build & run a CMake project
-  doctor (d)        Check development environment
-  config (c)        config file
-  help (h)          Show this help message
+# 导入并运行主函数
+from okcpp.cli import main
 
-Options:
-  -h, --help        Show help for a command
-
-Examples:
-  ok-cpp mkp demo/hello  (or: ok-cpp m demo/hello)
-  ok-cpp run             (or: ok-cpp r)
-  ok-cpp run demo/hello  (or: ok-cpp r demo/hello)
-  ok-cpp doctor          (or: ok-cpp d)
-EOF
-}
-
-# 命令映射函数:将简写映射到完整命令
-resolve_command() {
-  local input="$1"
-  case "$input" in
-    m) echo "mkp" ;;
-    r) echo "run" ;;
-    d) echo "doctor" ;;
-    c) echo "config" ;;
-    h) echo "help" ;;
-    mkp|run|doctor|config|help) echo "$input" ;;
-    *) echo "" ;;
-  esac
-}
-
-cmd="${1:-}"
-
-case "$cmd" in
-  -v|--version)
-    print_version
-    exit 0
-    ;;
-  -h|--help|"")
-    print_help
-    exit 0
-    ;;
-  *)
-    # 解析命令(支持简写)
-    resolved_cmd="$(resolve_command "$cmd")"
-    
-    if [[ "$resolved_cmd" == "help" ]]; then
-      print_help
-      exit 0
-    elif [[ "$resolved_cmd" == "mkp" || "$resolved_cmd" == "run" || "$resolved_cmd" == "doctor" || "$resolved_cmd" == "config" ]]; then
-      shift
-      exec bash "$MODULES_DIR/cmd_${resolved_cmd}.sh" "$@"
-    else
-      echo "Unknown command: $cmd"
-      echo
-      print_help
-      exit 1
-    fi
-    ;;
-esac
+if __name__ == "__main__":
+    sys.exit(main())
