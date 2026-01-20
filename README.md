@@ -16,6 +16,7 @@ multiple small example projects.
 - 🚀 One-command build & run for CMake projects
 - 📁 Project generator (`mkp`) with templates
 - 🧩 Template system (default / Qt, extensible)
+- 🛠️ Create custom templates from existing projects (`build-template`)
 - 🧪 Debug & Release modes
 - 🩺 Environment check with `doctor`
 - 📦 User-level and system-level installation
@@ -143,9 +144,29 @@ ok-cpp mkp --list
 ok-cpp mkp demos/app -n my_app
 ```
 
+### Create Custom Template
+
+Create a template from an existing project:
+
+```bash
+ok-cpp build-template ./my-existing-project -n my-custom-template
+```
+
+This command:
+- Copies the project to the template directory
+- Validates the template structure
+- Tests the template by building a temporary project
+
+Use `--skip-validate` to skip the validation step:
+
+```bash
+ok-cpp build-template ./my-project -n my-template --skip-validate
+```
+
 ### Environment Check
 
 Check whether required tools and dependencies are installed:
+
 ```bash
 ok-cpp doctor
 ```
@@ -181,15 +202,15 @@ ok-cpp --version
 
 ```txt
 ok-cpp/
-├── bin/
-│   └── ok-cpp              # Entry point (Python script)
-├── lib/
-│   └── okcpp/              # Python package
-│       ├── cli/            # CLI commands (run, mkp, doctor, config)
-│       ├── core/           # Core logic (builder, template, detector)
-│       ├── utils/          # Utilities (log, path, config)
-│       └── templates/      # Project templates (default, qt)
-├── install.sh              # Install script
+├── src/
+│   ├── okcpp/              # Python package
+│   │   ├── cli/            # CLI commands (run, mkp, build-template, doctor, config)
+│   │   ├── core/           # Core logic (builder, template, detector)
+│   │   ├── utils/          # Utilities (log, path, config)
+│   │   └── templates/      # Project templates (default, qt)
+│   └── bin/
+│       └── ok-cpp          # Entry point (Python script)
+├── install.sh              # Install script (copies src/ to /usr/local)
 ├── uninstall.sh            # Uninstall script
 ├── pyproject.toml          # Python project config
 ├── requirements.txt        # Python dependencies
@@ -204,8 +225,10 @@ ok-cpp/
 Run from source without installing:
 
 ```bash
-./bin/ok-cpp <command>
+./src/bin/ok-cpp <command>
 ```
+
+The entry script automatically detects whether it's running from source or from an installed location.
 
 ---
 

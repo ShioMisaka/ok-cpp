@@ -14,6 +14,7 @@
 - 🚀 CMake项目一键构建运行
 - 📁 带模板的项目生成器（`mkp`）
 - 🧩 模板系统（默认/Qt，可扩展）
+- 🛠️ 从现有项目创建自定义模板（`build-template`）
 - 🧪 调试与发布模式
 - 🩺 环境检测工具`doctor`
 - 📦 支持用户级与系统级安装
@@ -141,9 +142,29 @@ ok-cpp mkp --list
 ok-cpp mkp demos/app -n my_app
 ```
 
+### 创建自定义模板
+
+从现有项目创建模板：
+
+```bash
+ok-cpp build-template ./my-existing-project -n my-custom-template
+```
+
+此命令会：
+- 复制项目到模板目录
+- 验证模板结构
+- 通过构建临时项目来测试模板
+
+使用 `--skip-validate` 跳过验证步骤：
+
+```bash
+ok-cpp build-template ./my-project -n my-template --skip-validate
+```
+
 ### 环境检测
 
 检查所需工具及依赖项是否安装：
+
 ```bash
 ok-cpp doctor
 ```
@@ -179,15 +200,15 @@ ok-cpp --version
 
 ```txt
 ok-cpp/
-├── bin/
-│   └── ok-cpp              # 入口脚本（Python）
-├── lib/
-│   └── okcpp/              # Python 包
-│       ├── cli/            # CLI 命令（run, mkp, doctor, config）
-│       ├── core/           # 核心逻辑（builder, template, detector）
-│       ├── utils/          # 工具模块（log, path, config）
-│       └── templates/      # 项目模板（default, qt）
-├── install.sh              # 安装脚本
+├── src/
+│   ├── okcpp/              # Python 包
+│   │   ├── cli/            # CLI 命令（run, mkp, build-template, doctor, config）
+│   │   ├── core/           # 核心逻辑（builder, template, detector）
+│   │   ├── utils/          # 工具模块（log, path, config）
+│   │   └── templates/      # 项目模板（default, qt）
+│   └── bin/
+│       └── ok-cpp          # 入口脚本（Python）
+├── install.sh              # 安装脚本（复制 src/ 到 /usr/local）
 ├── uninstall.sh            # 卸载脚本
 ├── pyproject.toml          # Python 项目配置
 ├── requirements.txt        # Python 依赖
@@ -202,8 +223,10 @@ ok-cpp/
 不安装直接运行：
 
 ```bash
-./bin/ok-cpp <命令>
+./src/bin/ok-cpp <命令>
 ```
+
+入口脚本会自动检测是从源代码运行还是从安装位置运行。
 
 ---
 

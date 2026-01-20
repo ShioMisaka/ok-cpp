@@ -101,11 +101,11 @@ fi
 mkdir -p "$PREFIX/bin"
 mkdir -p "$INSTALL_DIR"
 
-# 复制 Python 包
-cp -r lib/okcpp "$PREFIX/lib/"
+# 复制 Python 包（从 src/ 到 $PREFIX/lib/）
+cp -r src/okcpp "$PREFIX/lib/"
 
-# 复制入口脚本
-cp bin/ok-cpp "$PREFIX/bin/ok-cpp"
+# 复制入口脚本（从 src/bin/ 到 $PREFIX/bin/）
+cp src/bin/ok-cpp "$PREFIX/bin/ok-cpp"
 chmod +x "$PREFIX/bin/ok-cpp"
 
 # 复制版本文件

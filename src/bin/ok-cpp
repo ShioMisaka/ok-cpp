@@ -9,14 +9,21 @@
 import sys
 from pathlib import Path
 
-# 添加 lib/ 目录到 Python 路径
-# 这样即使在开发环境中也能正确导入 okcpp 包
+# 脚本所在目录
 script_dir = Path(__file__).parent
-lib_dir = script_dir.parent / "lib"
 
-# 如果 lib 目录存在且包含 okcpp，添加到路径
+# 尝试两个可能的位置：
+# 1. 安装环境: $PREFIX/lib/okcpp
+# 2. 开发环境: src/okcpp (脚本在 src/bin/)
+lib_dir = script_dir.parent / "lib"
+src_dir = script_dir.parent
+
+# 安装环境：使用 lib/okcpp
 if lib_dir.exists() and (lib_dir / "okcpp").exists():
     sys.path.insert(0, str(lib_dir))
+# 开发环境：脚本在 src/bin/，okcpp 在 src/
+elif (src_dir / "okcpp").exists():
+    sys.path.insert(0, str(src_dir))
 
 # 导入并运行主函数
 from okcpp.cli import main

@@ -33,36 +33,41 @@ ok-cpp doctor
 
 ## Architecture
 
-The project is a Python-based CLI tool with the following structure:
+The project source code is organized under `src/`:
 
 ```
-lib/okcpp/              # Python package
-├── __init__.py
-├── cli/                # CLI command modules
-│   ├── __init__.py     # Command dispatcher
-│   ├── run.py          # run command
-│   ├── mkp.py          # mkp command
-│   ├── doctor.py       # doctor command
-│   └── config.py       # config command
-├── core/               # Core business logic
-│   ├── builder.py      # CMake build logic
-│   ├── template.py     # Template processing
-│   └── detector.py     # Environment detection
-├── utils/              # Utility modules
-│   ├── log.py          # Colored logging (rich)
-│   ├── path.py         # Path handling
-│   └── config.py       # User config management
-└── templates/          # Project templates (default, qt)
+src/
+├── okcpp/              # Python package
+│   ├── __init__.py
+│   ├── cli/            # CLI command modules
+│   │   ├── __init__.py     # Command dispatcher
+│   │   ├── run.py          # run command
+│   │   ├── mkp.py          # mkp command
+│   │   ├── build_template.py  # build-template command
+│   │   ├── doctor.py       # doctor command
+│   │   └── config.py       # config command
+│   ├── core/           # Core business logic
+│   │   ├── builder.py      # CMake build logic
+│   │   ├── template.py     # Template processing
+│   │   └── detector.py     # Environment detection
+│   ├── utils/          # Utility modules
+│   │   ├── log.py          # Colored logging (rich)
+│   │   ├── path.py         # Path handling
+│   │   └── config.py       # User config management
+│   └── templates/      # Project templates (default, qt)
+└── bin/
+    └── ok-cpp          # Entry script
 ```
 
-- `bin/ok-cpp.py` - Python entry point (shebang script)
-- `install.sh` - Installs Python package and dependencies
-- `pyproject.toml` - Python project configuration
+**Installation:**
+- Source files are in `src/` (tracked by git)
+- `install.sh` copies to `$PREFIX/lib/okcpp/` and `$PREFIX/bin/ok-cpp`
+- `.gitignore` ignores `lib/` (installation target, not source)
 
 ### Command Flow
 
-1. `bin/ok-cpp` (Python script) receives a command
-2. Commands support short aliases: r→run, m→mkp, d→doctor, c→config
+1. `src/bin/ok-cpp` (Python script) receives a command
+2. Commands support short aliases: r→run, m→mkp, bt→build-template, d→doctor, c→config
 3. The dispatcher (`cli/__init__.py:main()`) routes to the appropriate command module
 4. Each command module imports from `core/` and `utils/` as needed
 
@@ -73,7 +78,7 @@ lib/okcpp/              # Python package
 
 ### Template System
 
-Templates are stored in `lib/okcpp/templates/`. Each template must contain:
+Templates are stored in `src/okcpp/templates/`. Each template must contain:
 - `CMakeLists.txt` - Required, must have a `project(...)` line
 - Source files (main.cpp, include/, src/, etc.)
 
@@ -110,23 +115,32 @@ Config is managed by `utils/config.py:Config` class, which maintains compatibili
 
 ## Adding a New Template
 
-1. Create a new directory under `lib/okcpp/templates/your_template/`
+### Method 1: Directly in Source
+
+1. Create a new directory under `src/okcpp/templates/your_template/`
 2. Add a `CMakeLists.txt` with a `project(...)` line
 3. Add source files as needed
 4. Template will be automatically discovered by `mkp --list`
+
+### Method 2: Using build-template Command
+
+```bash
+ok-cpp build-template /path/to/existing/project -n my_template
+```
+
+This command:
+- Copies the project to `src/okcpp/templates/my_template/`
+- Validates the template structure
+- Tests the template by creating a temporary project and running it
 
 ## Development
 
 **Run from source without installing:**
 ```bash
-export PYTHONPATH=/path/to/ok-cpp/lib:$PYTHONPATH
-./bin/ok-cpp.py <command>
+./src/bin/ok-cpp <command>
 ```
 
-**Or directly:**
-```bash
-./bin/ok-cpp.py <command>
-```
+The entry script automatically detects whether it's running from source (`src/`) or from an installed location (`$PREFIX/lib/`).
 
 ## Template CMakeLists.txt Conventions
 
@@ -140,7 +154,13 @@ Templates should follow this pattern:
 
 ## Migration Notes (Shell → Python)
 
-- All shell scripts in `lib/ok-cpp/` have been replaced by Python modules
+- All shell scripts have been replaced by Python modules
 - Configuration file format remains compatible (KEY=value)
 - Command-line interface is identical
 - Output format and colors match the original implementation
+
+## Directory Structure Refactoring (2024)
+
+- Source code moved from `lib/` and `bin/` to `src/`
+- `install.sh` copies from `src/` to installation targets
+- `.gitignore` no longer interferes with source tracking
