@@ -163,6 +163,20 @@ Use `--skip-validate` to skip the validation step:
 ok-cpp build-template ./my-project -n my-template --skip-validate
 ```
 
+### Delete Template
+
+Delete a custom template:
+
+```bash
+ok-cpp delete-template my-custom-template
+```
+
+The command will prompt for confirmation before deleting. Use `--force` to skip confirmation:
+
+```bash
+ok-cpp delete-template my-template --force
+```
+
 ### Environment Check
 
 Check whether required tools and dependencies are installed:

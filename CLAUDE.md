@@ -133,6 +133,22 @@ This command:
 - Validates the template structure
 - Tests the template by creating a temporary project and running it
 
+## Deleting a Template
+
+Delete a custom template using the `delete-template` command:
+
+```bash
+ok-cpp delete-template my_template
+```
+
+The command will prompt for confirmation before deleting. Use `--force` to skip confirmation:
+
+```bash
+ok-cpp delete-template my_template --force
+```
+
+**Note:** Built-in templates (`default`, `qt`) can also be deleted, but this is not recommended as they are part of the core distribution.
+
 ## Development
 
 **Run from source without installing:**

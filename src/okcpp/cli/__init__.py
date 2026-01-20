@@ -42,6 +42,7 @@ Commands:
   mkp (m)                Create a new CMake C++ project
   run (r)                Build & run a CMake project
   build-template (bt)    Create a custom template from existing project
+  delete-template (dt)   Delete a custom template
   doctor (d)             Check development environment
   config (c)             config file
   help (h)               Show this help message
@@ -55,6 +56,7 @@ Examples:
   ok-cpp run                      (or: ok-cpp r)
   ok-cpp run demo/hello           (or: ok-cpp r demo/hello)
   ok-cpp build-template ./my-proj -n my-template
+  ok-cpp delete-template my-template
   ok-cpp doctor                   (or: ok-cpp d)""")
 
 
@@ -80,6 +82,7 @@ def main() -> int:
         "m": "mkp",
         "r": "run",
         "bt": "build-template",
+        "dt": "delete-template",
         "d": "doctor",
         "c": "config",
         "h": "help",
@@ -101,6 +104,9 @@ def main() -> int:
     elif resolved == "build-template":
         from okcpp.cli import build_template
         return build_template.main(sys.argv[2:])
+    elif resolved == "delete-template":
+        from okcpp.cli import delete_template
+        return delete_template.main(sys.argv[2:])
     elif resolved == "doctor":
         from okcpp.cli import doctor
         return doctor.main(sys.argv[2:])

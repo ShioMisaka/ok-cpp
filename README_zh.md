@@ -161,6 +161,20 @@ ok-cpp build-template ./my-existing-project -n my-custom-template
 ok-cpp build-template ./my-project -n my-template --skip-validate
 ```
 
+### 删除模板
+
+删除自定义模板：
+
+```bash
+ok-cpp delete-template my-custom-template
+```
+
+删除前会提示确认。使用 `--force` 跳过确认：
+
+```bash
+ok-cpp delete-template my-template --force
+```
+
 ### 环境检测
 
 检查所需工具及依赖项是否安装：
