@@ -13,7 +13,7 @@
 
 - 🚀 CMake项目一键构建运行
 - 📁 带模板的项目生成器（`mkp`）
-- 🧩 模板系统（默认/Qt，可扩展）
+- 🧩 模板系统（默认/Qt/静态库/动态库，可扩展）
 - 🛠️ 从现有项目创建自定义模板（`build-template`）
 - 🧪 调试与发布模式
 - 🩺 环境检测工具`doctor`
@@ -132,6 +132,16 @@ ok-cpp mkp demos/hello
 ok-cpp mkp demos/qt_app -t qt
 ```
 
+#### 使用静态库模板
+```bash
+ok-cpp mkp demos/mylib -t static-lib
+```
+
+#### 使用动态库模板
+```bash
+ok-cpp mkp demos/mylib -t dynamic-lib
+```
+
 #### 列出可用模板
 ```bash
 ok-cpp mkp --list
@@ -219,7 +229,7 @@ ok-cpp/
 │   │   ├── cli/            # CLI 命令（run, mkp, build-template, doctor, config）
 │   │   ├── core/           # 核心逻辑（builder, template, detector）
 │   │   ├── utils/          # 工具模块（log, path, config）
-│   │   └── templates/      # 项目模板（default, qt）
+│   │   └── templates/      # 项目模板（default, qt, static-lib, dynamic-lib）
 │   └── bin/
 │       └── ok-cpp          # 入口脚本（Python）
 ├── install.sh              # 安装脚本（复制 src/ 到 /usr/local）
