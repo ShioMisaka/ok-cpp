@@ -281,6 +281,8 @@ def run_cmake_build(config: BuildConfig) -> bool:
 def get_executable_path(config: BuildConfig) -> Path:
     """获取可执行文件路径。
 
+    对于库模板，会尝试查找 ${PROJECT_NAME}_test 作为回退选项。
+
     Args:
         config: 构建配置
 
@@ -288,7 +290,13 @@ def get_executable_path(config: BuildConfig) -> Path:
         可执行文件的路径
     """
     if config.project_name:
-        return config.build_dir / config.project_name
+        exe_path = config.build_dir / config.project_name
+        # 如果主可执行文件不存在，尝试查找 _test 后缀的（用于库模板）
+        if not exe_path.exists():
+            test_path = config.build_dir / f"{config.project_name}_test"
+            if test_path.exists():
+                return test_path
+        return exe_path
     # 如果没有项目名，使用目录名
     return config.build_dir / config.project_dir.name
 
