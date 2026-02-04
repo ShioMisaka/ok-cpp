@@ -15,7 +15,7 @@ multiple small example projects.
 
 - 🚀 One-command build & run for CMake projects
 - 📁 Project generator (`mkp`) with templates
-- 🧩 Template system (default / Qt, extensible)
+- 🧩 Template system (default / Qt / static-lib / dynamic-lib, extensible)
 - 🛠️ Create custom templates from existing projects (`build-template`)
 - 🧪 Debug & Release modes
 - 🩺 Environment check with `doctor`
@@ -134,6 +134,16 @@ ok-cpp mkp demos/hello
 ok-cpp mkp demos/qt_app -t qt
 ```
 
+#### Use static library template
+```bash
+ok-cpp mkp demos/mylib -t static-lib
+```
+
+#### Use dynamic library template
+```bash
+ok-cpp mkp demos/mylib -t dynamic-lib
+```
+
 #### List available templates
 ```bash
 ok-cpp mkp --list
@@ -221,7 +231,7 @@ ok-cpp/
 │   │   ├── cli/            # CLI commands (run, mkp, build-template, doctor, config)
 │   │   ├── core/           # Core logic (builder, template, detector)
 │   │   ├── utils/          # Utilities (log, path, config)
-│   │   └── templates/      # Project templates (default, qt)
+│   │   └── templates/      # Project templates (default, qt, static-lib, dynamic-lib)
 │   └── bin/
 │       └── ok-cpp          # Entry point (Python script)
 ├── install.sh              # Install script (copies src/ to /usr/local)

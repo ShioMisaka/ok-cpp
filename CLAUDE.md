@@ -54,7 +54,7 @@ src/
 │   │   ├── log.py          # Colored logging (rich)
 │   │   ├── path.py         # Path handling
 │   │   └── config.py       # User config management
-│   └── templates/      # Project templates (default, qt)
+│   └── templates/      # Project templates (default, qt, static-lib, dynamic-lib)
 └── bin/
     └── ok-cpp          # Entry script
 ```
@@ -147,7 +147,7 @@ The command will prompt for confirmation before deleting. Use `--force` to skip 
 ok-cpp delete-template my_template --force
 ```
 
-**Note:** Built-in templates (`default`, `qt`) can also be deleted, but this is not recommended as they are part of the core distribution.
+**Note:** Built-in templates (`default`, `qt`, `static-lib`, `dynamic-lib`) can also be deleted, but this is not recommended as they are part of the core distribution.
 
 ## Development
 
